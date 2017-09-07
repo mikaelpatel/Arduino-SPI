@@ -5,9 +5,9 @@ firmware and software implementation, and device driver support.
 
 ## Classes
 
-* [Abstract SPI Interface, SPI](./src/SPI.h)
+* [Abstract Serial Peripheral Interface, SPI](./src/SPI.h)
 * [SPI Device Driver Interface, SPI::Device](./src/SPI.h)
-* [Software SPI Interface, Software::SPI](./src/Software/SPI.h)
+* [Software Serial Peripheral Interface, Software::SPI](./src/Software/SPI.h)
 
 ## Example Sketches
 
