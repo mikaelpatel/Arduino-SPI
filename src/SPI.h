@@ -71,6 +71,7 @@ public:
   /**
    * Serial Perpheral Interface (SPI) device driver class.
    * @param[in] MODE clock mode (polarity and phase).
+   * @param[in] BITORDER LSB or MSB first.
    * @param[in] SS_PIN board pin for device chip select.
    */
   template<uint8_t MODE, uint8_t BITORDER, BOARD::pin_t SS_PIN>
