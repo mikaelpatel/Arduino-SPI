@@ -26,6 +26,6 @@ select and buffer access.
 Transfer | bytes | bitorder | us
 ---------|----------|-------|---
 uint8_t | 1 | MSB | 14
-        |   | LSB | 16
+uint8_t | 1 | LSB | 16
 uint32_t | 4 | MSB | 66
-         |   | LSB | 69
+uint32_t | 4 | LSB | 69
