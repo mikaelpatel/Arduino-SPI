@@ -16,3 +16,16 @@ Version: 1.1
 * [SoftwareSPI](./examples/SoftwareSPI)
 * [ShiftIn](./examples/ShiftIn)
 * [ShiftOut](./examples/ShiftOut)
+
+## Benchmarks
+
+SPI::Device with Software::SPI bit-rate is approx. 570 kHz (LSB) and
+730 kHz (MSB). Transfer measurent use SPI mode(0), and include slave
+select and buffer access.
+
+Transfer | bytes | bitorder | us
+---------|----------|-------|---
+uint8_t | 1 | MSB | 14
+        |   | LSB | 16
+uint32_t | 4 | MSB | 66
+         |   | LSB | 69
