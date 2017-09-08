@@ -4,7 +4,7 @@ The Serial Peripheral Interface library is abstract interface for SPI
 firmware and software implementation, and device driver support,
 SPI::Device.
 
-Version: 1.0
+Version: 1.1
 */
 
 /** @page License

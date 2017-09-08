@@ -3,6 +3,8 @@
 The Serial Peripheral Interface library is an abstract interface for SPI
 firmware and software implementation, and device driver support.
 
+Version: 1.1
+
 ## Classes
 
 * [Abstract Serial Peripheral Interface, SPI](./src/SPI.h)
@@ -12,3 +14,5 @@ firmware and software implementation, and device driver support.
 ## Example Sketches
 
 * [SoftwareSPI](./examples/SoftwareSPI)
+* [ShiftIn](./examples/ShiftIn)
+* [ShiftOut](./examples/ShiftOut)

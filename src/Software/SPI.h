@@ -1,6 +1,6 @@
 /**
  * @file Software/SPI.h
- * @version 1.0
+ * @version 1.1
  *
  * @section License
  * Copyright (C) 2017, Mikael Patel
@@ -28,12 +28,12 @@
 
 /**
  * Software Serial Perpheral Interface (SPI) class using GPIO.
- * @param[in] SCL_PIN board pin for clock.
+ * @param[in] SCK_PIN board pin for clock.
  * @param[in] MOSI_PIN board pin for master output slave input.
  * @param[in] MISO_PIN board pin for master input slave output.
  */
 namespace Software {
-template<BOARD::pin_t SCL_PIN,
+template<BOARD::pin_t SCK_PIN,
 	 BOARD::pin_t MOSI_PIN,
 	 BOARD::pin_t MISO_PIN>
 class SPI : public ::SPI {
@@ -44,25 +44,27 @@ public:
    */
   SPI()
   {
-    m_scl.output();
+    m_busy = false;
+    m_sck.output();
     m_mosi.output();
     m_miso.input();
-    m_dev = NULL;
   }
 
   /**
    * @override{SPI}
    * Acquire bus access. Yield until bus is released.
-   * @param[in] dev device driver.
    * @param[in] mode of access.
+   * @param[in] bitorder of serial data.
+   * @param[in] prescale clock frequency.
    */
-  virtual void acquire(void* dev, uint8_t mode)
+  virtual void acquire(uint8_t mode, uint8_t bitorder, uint8_t prescale)
   {
-    while (m_dev != NULL) yield();
-    m_dev = dev;
+    (void) prescale;
+    while (m_busy) yield();
+    m_busy = true;
+    m_sck = mode & 2;
     m_cpha = mode & 1;
-    m_scl = mode & 2;
-    m_msbfirst = mode & 4;
+    m_bitorder = bitorder;
   }
 
   /**
@@ -71,7 +73,7 @@ public:
    */
   virtual void release()
   {
-    m_dev = NULL;
+    m_busy = false;
   }
 
   /**
@@ -84,24 +86,24 @@ public:
   {
     const bool cpha = m_cpha;
     uint8_t bits = CHARBITS;
-    if (m_msbfirst) {
+    if (m_bitorder == MSBFIRST) {
       do {
-	if (cpha) m_scl.toggle();
+	if (cpha) m_sck.toggle();
 	m_mosi = value & 0x80;
-	m_scl.toggle();
+	m_sck.toggle();
 	value <<= 1;
 	value |= (m_miso ? 0x01 : 0x00);
-	if (!cpha) m_scl.toggle();
+	if (!cpha) m_sck.toggle();
       } while (--bits);
     }
     else {
       do {
-	if (cpha) m_scl.toggle();
+	if (cpha) m_sck.toggle();
 	m_mosi = value & 0x01;
-	m_scl.toggle();
+	m_sck.toggle();
 	value >>= 1;
 	value |= (m_miso ? 0x80 : 0x00);
-	if (!cpha) m_scl.toggle();
+	if (!cpha) m_sck.toggle();
       } while (--bits);
     }
     return (value);
@@ -109,7 +111,7 @@ public:
 
 protected:
   /** Clock pin. */
-  GPIO<SCL_PIN> m_scl;
+  GPIO<SCK_PIN> m_sck;
 
   /** Master Output Slave Input pin. */
   GPIO<MOSI_PIN> m_mosi;
@@ -118,13 +120,13 @@ protected:
   GPIO<MISO_PIN> m_miso;
 
   /** Bus manager semaphore. */
-  volatile void* m_dev;
+  volatile bool m_busy;
 
   /** Clock phase flag. */
-  bool m_cpha;
+  uint8_t m_cpha;
 
-  /** MSB first bitorder flag. */
-  bool m_msbfirst;
+  /** Serial data bitorder flag. */
+  uint8_t m_bitorder;
 };
 
 };

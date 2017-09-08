@@ -1,6 +1,6 @@
 /**
  * @file SPI.h
- * @version 1.0
+ * @version 1.1
  *
  * @section License
  * Copyright (C) 2017, Mikael Patel
@@ -26,13 +26,20 @@
  */
 class SPI {
 public:
+  /** Minimum clock prescale. */
+  static const uint8_t MIN_PRESCALE = 2;
+
+  /** Maximum clock frequency. */
+  static const uint32_t MAX_FREQ = F_CPU / MIN_PRESCALE;
+
   /**
    * @override{SPI}
    * Acquire bus access with given mode.
-   * @param[in] dev device driver.
    * @param[in] mode of access.
+   * @param[in] bitorder of serial data.
+   * @param[in] prescale clock.
    */
-  virtual void acquire(void* dev, uint8_t mode) = 0;
+  virtual void acquire(uint8_t mode, uint8_t bitorder, uint8_t prescale) = 0;
 
   /**
    * @override{SPI}
@@ -59,12 +66,20 @@ public:
    */
   void transfer(void* dest, const void* src, size_t count)
   {
+    if (count == 0) return;
     const uint8_t* sp = (const uint8_t*) src;
     uint8_t* dp = (uint8_t*) dest;
-    while (count--) {
-      uint8_t value = (sp != NULL ? *sp++ : 0);
-      value = transfer(value);
-      if (dp != NULL) *dp++ = value;
+    if (dp != NULL) {
+      if (sp != NULL)
+	do *dp++ = transfer(*sp++); while (--count);
+      else
+	do *dp++ = transfer(0); while (--count);
+    }
+    else {
+      if (sp != NULL)
+	do transfer(*sp++); while (--count);
+      else
+	do transfer(0); while (--count);
     }
   }
 
@@ -72,16 +87,17 @@ public:
    * Serial Perpheral Interface (SPI) device driver class.
    * @param[in] MODE clock mode (polarity and phase).
    * @param[in] BITORDER LSB or MSB first.
-   * @param[in] SS_PIN board pin for device chip select.
+   * @param[in] FREQ max clock frequency.
+   * @param[in] SS_PIN board pin for device slave select.
    */
-  template<uint8_t MODE, uint8_t BITORDER, BOARD::pin_t SS_PIN>
+  template<uint8_t MODE, uint8_t BITORDER, uint32_t FREQ, BOARD::pin_t SS_PIN>
   class Device {
   public:
     /**
      * Construct Serial Perpheral Interface (SPI) device driver
-     * instance and initiate chip select pin.
+     * instance and initiate slave select pin.
      * @param[in] spi bus manager.
-     * @param[in] ss initial chip select pin state (default HIGH).
+     * @param[in] ss initial slave select pin state (default HIGH).
      */
     Device(SPI& spi, bool ss = HIGH) :
       m_spi(spi)
@@ -95,7 +111,7 @@ public:
      */
     void acquire()
     {
-      m_spi.acquire(this, MODE | (BITORDER << 2));
+      m_spi.acquire(MODE, BITORDER, FREQ / F_CPU);
       m_ss.toggle();
     }
 
@@ -136,7 +152,7 @@ public:
     /** Bus manager. */
     SPI& m_spi;
 
-    /** Chip select pin. */
+    /** Slave select pin. */
     GPIO<SS_PIN> m_ss;
   };
 };
