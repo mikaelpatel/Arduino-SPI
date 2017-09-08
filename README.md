@@ -20,7 +20,7 @@ Version: 1.1
 ## Benchmarks
 
 SPI::Device with Software::SPI bit-rate is approx. 570 kHz (LSB) and
-730 kHz (MSB). Transfer measurent use SPI mode(0), and include slave
+730 kHz (MSB). Transfer measurment use SPI mode(0), and include slave
 select and buffer access.
 
 Transfer | bytes | bitorder | us
