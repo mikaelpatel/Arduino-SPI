@@ -92,7 +92,7 @@ public:
 	m_mosi = value & 0x80;
 	m_sck.toggle();
 	value <<= 1;
-	value |= (m_miso ? 0x01 : 0x00);
+	value |= m_miso;
 	if (!cpha) m_sck.toggle();
       } while (--bits);
     }

@@ -23,7 +23,7 @@ void loop()
   ss.toggle();
   delayMicroseconds(10);
 
-  // SPI bus manager serial data transfer: 17.31 us, 15.19 us
+  // SPI bus manager serial data transfer: 16.75 us, 15.06 us
   ss.toggle();
   spi.acquire(0, BITORDER, SPI::MIN_PRESCALE);
   spi.transfer(value);
@@ -31,7 +31,7 @@ void loop()
   ss.toggle();
   delayMicroseconds(20);
 
-  // SPI device driver serial data transfer: 16.44 us, 14.31 us
+  // SPI device driver serial data transfer: 15.87 us, 14.19 us
   dev.acquire();
   dev.transfer(value);
   dev.release();
@@ -43,19 +43,19 @@ void loop()
   dev.release();
   delayMicroseconds(10);
 
-  // SPI device driver serial buffer write: 68.75 us, 58.56 us
+  // SPI device driver serial buffer write: 68.19 us, 58.38 us
   dev.acquire();
   dev.transfer(NULL, &value, sizeof(value));
   dev.release();
   delayMicroseconds(10);
 
-  // SPI device driver serial buffer read: 70.56 us, 58.31 us
+  // SPI device driver serial buffer read: 70.62 us, 58.31 us
   dev.acquire();
   dev.transfer(&res, NULL, sizeof(value));
   dev.release();
   delayMicroseconds(10);
 
-  // SPI device driver serial buffer transfer: 69.44 us, 65.81 us
+  // SPI device driver serial buffer transfer: 69.25 us, 59.44 us
   dev.acquire();
   dev.transfer(&res, &value, sizeof(value));
   dev.release();
