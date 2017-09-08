@@ -1,6 +1,6 @@
 /**
  * @file SPI.h
- * @version 1.1
+ * @version 1.2
  *
  * @section License
  * Copyright (C) 2017, Mikael Patel
@@ -111,7 +111,7 @@ public:
      */
     void acquire()
     {
-      m_spi.acquire(MODE, BITORDER, FREQ / F_CPU);
+      m_spi.acquire(MODE, BITORDER, F_CPU / FREQ);
       m_ss.toggle();
     }
 
