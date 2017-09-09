@@ -55,11 +55,11 @@ public:
    * Acquire bus access. Yield until bus is released.
    * @param[in] mode of access.
    * @param[in] bitorder of serial data.
-   * @param[in] prescale clock frequency.
+   * @param[in] scale clock frequency.
    */
-  virtual void acquire(uint8_t mode, uint8_t bitorder, uint8_t prescale)
+  virtual void acquire(uint8_t mode, uint8_t bitorder, uint8_t scale)
   {
-    (void) prescale;
+    (void) scale;
     while (m_busy) yield();
     m_busy = true;
     m_sck = mode & 2;

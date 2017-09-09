@@ -3,7 +3,10 @@
 The Serial Peripheral Interface library is an abstract interface for SPI
 hardware and software implementation, and device driver support.
 
-Version: 1.2
+The library contains bus manager implementations for hardware
+resources (SPI and USI) and software using Ardino-GPIO.
+
+Version: 1.3
 
 ## Classes
 
@@ -21,8 +24,8 @@ Version: 1.2
 
 ## Benchmarks
 
-SPI::Device with Software::SPI bit-rate is approx. 570 kHz (LSB) and
-730 kHz (MSB). Transfer measurment use SPI mode(0), and include slave
+Software SPI bus manager bit-rate is approx. 570 kHz (LSB) and
+730 kHzf (MSB). Transfer measurments use SPI mode(0), and include slave
 select and buffer access.
 
 Transfer | bytes | bitorder | us

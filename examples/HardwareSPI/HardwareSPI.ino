@@ -5,9 +5,9 @@
 // Serial Peripheral Interface, bus manager and device driver support
 #define BITORDER MSBFIRST
 #define FREQ 2000000L
-GPIO<BOARD::D10> ss;
+GPIO<BOARD::SS> ss;
 Hardware::SPI spi;
-SPI::Device<0, BITORDER, FREQ, BOARD::D10> dev(spi);
+SPI::Device<0, BITORDER, FREQ, BOARD::SS> dev(spi);
 
 void setup()
 {
@@ -27,7 +27,7 @@ void loop()
 
   // SPI bus manager serial data transfer:
   ss.toggle();
-  spi.acquire(0, BITORDER, SPI::MIN_PRESCALE);
+  spi.acquire(0, BITORDER, SPI::MIN_CLOCK_SCALE);
   spi.transfer(value);
   spi.release();
   ss.toggle();

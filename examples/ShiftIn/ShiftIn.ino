@@ -13,7 +13,7 @@ Software::SPI<BOARD::D11, BOARD::D12, BOARD::D13> spi;
 void setup()
 {
   ss.output();
-  spi.acquire(0, LSBFIRST, SPI::MIN_PRESCALE);
+  spi.acquire(0, LSBFIRST, SPI::MIN_CLOCK_SCALE);
 }
 
 void loop()

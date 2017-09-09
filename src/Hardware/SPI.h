@@ -1,6 +1,6 @@
 /**
  * @file Hardware/SPI.h
- * @version 1.0
+ * @version 1.1
  *
  * @section License
  * Copyright (C) 2017, Mikael Patel
@@ -45,24 +45,43 @@ public:
    * Acquire bus access. Yield until bus is released.
    * @param[in] mode of access.
    * @param[in] bitorder of serial data.
-   * @param[in] prescale clock frequency.
+   * @param[in] scale clock frequency.
    */
-  virtual void acquire(uint8_t mode, uint8_t bitorder, uint8_t prescale)
+  virtual void acquire(uint8_t mode, uint8_t bitorder, uint8_t scale)
   {
+    // Wait for bus manager to be released
     while (m_busy) yield();
     m_busy = true;
+
+#if defined(SPDR)
+    // Calculate clock setting for given scale
     int8_t spr = 0;
-    prescale >>= 2;
-    while (prescale != 0) {
+    scale >>= 2;
+    while (scale != 0) {
       spr++;
-      prescale >>= 1;
+      scale >>= 1;
     }
+
+    // Set control registers: mode, bitorder and clock
     SPCR = _BV(SPE)
          | _BV(MSTR)
          | (bitorder == LSBFIRST ? _BV(DORD) : 0)
          | ((mode & 3) << CPHA)
          | ((spr >> 1) & 3);
     SPSR = ((spr & 0x01) == 0);
+
+#elif defined(USIDR)
+    // No used: Only MSBFIRST and min scale
+    (void) bitorder;
+    (void) scale;
+
+    // Set clock polarity
+    m_sck.write(mode & 0x02);
+
+    // Cache clocking command
+    m_usicr = (_BV(USIWM0) | _BV(USICS1) | _BV(USICLK) | _BV(USITC));
+    if (mode == 1 || mode == 2) m_usicr |= _BV(USICS0);
+#endif
   }
 
   /**
@@ -82,10 +101,21 @@ public:
    */
   virtual uint8_t transfer(uint8_t value)
   {
+#if defined(SPDR)
     SPDR = value;
     __asm__ __volatile__("nop");
     loop_until_bit_is_set(SPSR, SPIF);
     return (SPDR);
+
+#elif defined(USIDR)
+    USIDR = value;
+    USISR = _BV(USIOIF);
+    register uint8_t cntl = m_usicr;
+    do {
+      USICR = cntl;
+    } while ((USISR & _BV(USIOIF)) == 0);
+    return (USIDR);
+#endif
   }
 
 protected:
@@ -103,6 +133,11 @@ protected:
 
   /** Master Input Slave Output pin. */
   GPIO<BOARD::MISO> m_miso;
+
+#if defined(USIDR)
+  /** USI clock command. */
+  uint8_t m_usicr;
+#endif
 };
 
 };

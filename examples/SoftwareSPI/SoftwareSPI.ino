@@ -25,7 +25,7 @@ void loop()
 
   // SPI bus manager serial data transfer: 16.75 us, 15.06 us
   ss.toggle();
-  spi.acquire(0, BITORDER, SPI::MIN_PRESCALE);
+  spi.acquire(0, BITORDER, SPI::MIN_CLOCK_SCALE);
   spi.transfer(value);
   spi.release();
   ss.toggle();

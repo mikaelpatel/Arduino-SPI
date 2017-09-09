@@ -4,7 +4,10 @@ The Serial Peripheral Interface library is abstract interface for SPI
 hardware and software implementation, and device driver support,
 SPI::Device.
 
-Version: 1.2
+The library contains bus manager implementations for hardware
+resources (SPI and USI) and software using Ardino-GPIO.
+
+Version: 1.3
 */
 
 /** @page License

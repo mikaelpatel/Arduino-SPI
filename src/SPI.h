@@ -26,20 +26,20 @@
  */
 class SPI {
 public:
-  /** Minimum clock prescale. */
-  static const uint8_t MIN_PRESCALE = 2;
+  /** Minimum clock frequency scale. */
+  static const uint8_t MIN_CLOCK_SCALE = 2;
 
   /** Maximum clock frequency. */
-  static const uint32_t MAX_FREQ = F_CPU / MIN_PRESCALE;
+  static const uint32_t MAX_FREQ = F_CPU / MIN_CLOCK_SCALE;
 
   /**
    * @override{SPI}
    * Acquire bus access with given mode.
    * @param[in] mode of access.
    * @param[in] bitorder of serial data.
-   * @param[in] prescale clock.
+   * @param[in] scale clock frequency.
    */
-  virtual void acquire(uint8_t mode, uint8_t bitorder, uint8_t prescale) = 0;
+  virtual void acquire(uint8_t mode, uint8_t bitorder, uint8_t scale) = 0;
 
   /**
    * @override{SPI}
