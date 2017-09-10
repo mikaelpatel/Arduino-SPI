@@ -22,6 +22,8 @@ Version: 1.4
 
 ## Benchmarks
 
+Benchmarks include bus acquire and release, and slave select pin handling.
+
 #### Software SPI Bus Manager
 
 Operation (LSB @ 570 kHz) | Bytes | us
