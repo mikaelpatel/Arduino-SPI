@@ -55,7 +55,7 @@ public:
 
 #if defined(SPDR)
     // Calculate clock setting for given scale
-    int8_t spr = 0;
+    uint8_t spr = 0;
     scale >>= 2;
     while (scale != 0) {
       spr++;
@@ -71,7 +71,7 @@ public:
     SPSR = ((spr & 0x01) == 0);
 
 #elif defined(USIDR)
-    // No used: Only MSBFIRST and min scale
+    // Not used: only MSBFIRST bitorder and max frequency
     (void) bitorder;
     (void) scale;
 
