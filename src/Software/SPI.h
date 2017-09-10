@@ -1,6 +1,6 @@
 /**
  * @file Software/SPI.h
- * @version 1.1
+ * @version 1.2
  *
  * @section License
  * Copyright (C) 2017, Mikael Patel
@@ -28,14 +28,14 @@
 
 /**
  * Software Serial Perpheral Interface (SPI) class using GPIO.
- * @param[in] SCK_PIN board pin for clock.
  * @param[in] MOSI_PIN board pin for master output slave input.
  * @param[in] MISO_PIN board pin for master input slave output.
+ * @param[in] SCK_PIN board pin for clock.
  */
 namespace Software {
-template<BOARD::pin_t SCK_PIN,
-	 BOARD::pin_t MOSI_PIN,
-	 BOARD::pin_t MISO_PIN>
+template<BOARD::pin_t MOSI_PIN,
+	 BOARD::pin_t MISO_PIN,
+	 BOARD::pin_t SCK_PIN>
 class SPI : public ::SPI {
 public:
   /**

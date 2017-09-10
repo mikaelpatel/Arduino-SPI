@@ -1,10 +1,9 @@
 #include "GPIO.h"
 #include "SPI.h"
 
-
 // Configuration:
-#define USE_SOFTWARE_SPI
-// #define USE_HARDWARE_SPI
+// #define USE_SOFTWARE_SPI
+#define USE_HARDWARE_SPI
 // #define BITORDER LSBFIRST
 #define BITORDER MSBFIRST
 
