@@ -11,7 +11,7 @@ Version: 1.4
 ## Classes
 
 * [Abstract SPI Bus Manager Interface, SPI](./src/SPI.h)
-* [Abstrace SPI Device Driver Interface, SPI::Device](./src/SPI.h)
+* [Abstract SPI Device Driver Interface, SPI::Device](./src/SPI.h)
 * [Hardware SPI Bus Manager Interface, Hardware::SPI](./src/Hardware/SPI.h)
 * [Software SPI Bus Manager Interface, Software::SPI](./src/Software/SPI.h)
 
