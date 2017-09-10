@@ -6,7 +6,7 @@ hardware and software implementation, and device driver support.
 The library contains bus manager implementations for hardware
 resources (SPI and USI) and software using Ardino-GPIO.
 
-Version: 1.4
+Version: 1.5
 
 ## Classes
 
@@ -39,6 +39,11 @@ transfer | 1 | 14
 read | 4 | 55
 write | 4  | 56
 transfer | 4  | 57
+
+Wiring | us | SPI | us | Xn
+------ |----|------|----|----
+shiftIn | 85 | var = spi.transfer(0) | 16 | 5
+shiftOut | 109 | spi.transfer(var) | 15 | 7
 
 #### Hardware SPI Bus Manager
 
