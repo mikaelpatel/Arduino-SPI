@@ -74,6 +74,7 @@ public:
   virtual void release()
   {
     m_busy = false;
+    m_mosi = LOW;
   }
 
   /**

@@ -1,12 +1,30 @@
 #include "GPIO.h"
 #include "SPI.h"
-#include "Software/SPI.h"
 
-// Serial Peripheral Interface, bus manager and device driver support
+
+// Configuration:
+#define USE_SOFTWARE_SPI
+#define USE_HARDWARE_SPI
+// #define BITORDER LSBFIRST
 #define BITORDER MSBFIRST
+
+#if defined(USE_SOFTWARE_SPI)
+#include "Software/SPI.h"
+#if defined(ARDUINO_attiny)
+GPIO<BOARD::D0> ss;
+Software::TWI<BOARD::D1, BOARD::D2> twi;
+SPI::Device<0, BITORDER, SPI::MAX_FREQ, BOARD::D0> dev(spi);
+#else
 GPIO<BOARD::D10> ss;
 Software::SPI<BOARD::D11, BOARD::D12, BOARD::D13> spi;
 SPI::Device<0, BITORDER, SPI::MAX_FREQ, BOARD::D10> dev(spi);
+#endif
+#elif defined(USE_HARDWARE_SPI)
+#include "Hardware/SPI.h"
+GPIO<BOARD::D10> ss;
+Hardware::SPI spi;
+SPI::Device<0, BITORDER, SPI::MAX_FREQ, BOARD::D10> dev(spi);
+#endif
 
 void setup()
 {
@@ -18,12 +36,7 @@ void loop()
   static uint32_t value = 0;
   uint32_t res;
 
-  // SS toggle (baseline): 0.125 us
-  ss.toggle();
-  ss.toggle();
-  delayMicroseconds(10);
-
-  // SPI bus manager serial data transfer: 16.75 us, 15.06 us
+  // SPI bus manager serial data transfer
   ss.toggle();
   spi.acquire(0, BITORDER, SPI::MIN_CLOCK_SCALE);
   spi.transfer(value);
@@ -31,31 +44,25 @@ void loop()
   ss.toggle();
   delayMicroseconds(20);
 
-  // SPI device driver serial data transfer: 15.87 us, 14.19 us
+  // SPI device driver serial data transfer
   dev.acquire();
   dev.transfer(value);
   dev.release();
   delayMicroseconds(10);
 
-  // SPI device driver serial clock: 68 us, 55.75 us
+  // SPI device driver serial buffer read
   dev.acquire();
-  dev.transfer(NULL, NULL, sizeof(value));
+  dev.read(&res, sizeof(value));
   dev.release();
   delayMicroseconds(10);
 
-  // SPI device driver serial buffer write: 68.19 us, 58.38 us
+  // SPI device driver serial buffer write
   dev.acquire();
-  dev.transfer(NULL, &value, sizeof(value));
+  dev.write(&value, sizeof(value));
   dev.release();
   delayMicroseconds(10);
 
-  // SPI device driver serial buffer read: 70.62 us, 58.31 us
-  dev.acquire();
-  dev.transfer(&res, NULL, sizeof(value));
-  dev.release();
-  delayMicroseconds(10);
-
-  // SPI device driver serial buffer transfer: 69.25 us, 59.44 us
+  // SPI device driver serial buffer transfer
   dev.acquire();
   dev.transfer(&res, &value, sizeof(value));
   dev.release();

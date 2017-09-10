@@ -1,6 +1,6 @@
 /**
  * @file SPI.h
- * @version 1.2
+ * @version 1.3
  *
  * @section License
  * Copyright (C) 2017, Mikael Patel
@@ -56,31 +56,42 @@ public:
   virtual uint8_t transfer(uint8_t value) = 0;
 
   /**
-   * Send given number of bytes from source buffer to device. Store
-   * received bytes in destination buffer. A read operation may be
-   * performed by passing NULL as the source buffer. A write operation
-   * by passing NULL as the destination buffer.
+   * Transfer given number of bytes from source buffer to
+   * device. Store received bytes in destination buffer.
    * @param[in] dest destination buffer.
    * @param[in] src source buffer.
    * @param[in] count number of bytes to transfer.
    */
   void transfer(void* dest, const void* src, size_t count)
   {
-    if (count == 0) return;
+    if (count == 0 || dest == NULL || src == NULL) return;
     const uint8_t* sp = (const uint8_t*) src;
     uint8_t* dp = (uint8_t*) dest;
-    if (dp != NULL) {
-      if (sp != NULL)
-	do *dp++ = transfer(*sp++); while (--count);
-      else
-	do *dp++ = transfer(0); while (--count);
-    }
-    else {
-      if (sp != NULL)
-	do transfer(*sp++); while (--count);
-      else
-	do transfer(0); while (--count);
-    }
+    do *dp++ = transfer(*sp++); while (--count);
+  }
+
+  /**
+   * Read given number of bytes from device and store in buffer.
+   * @param[in] buf buffer pointer.
+   * @param[in] count number of bytes.
+   */
+  void read(void* buf, size_t count)
+  {
+    if (count == 0 || buf == NULL) return;
+    uint8_t* bp = (uint8_t*) buf;
+    do *bp++ = transfer(0); while (--count);
+  }
+
+  /**
+   * Write given number of bytes from buffer to device.
+   * @param[in] buf buffer pointer.
+   * @param[in] count number of bytes.
+   */
+  void write(const void* buf, size_t count)
+  {
+    if (count == 0 || buf == NULL) return;
+    uint8_t* bp = (uint8_t*) buf;
+    do transfer(*bp++); while (--count);
   }
 
   /**
@@ -135,10 +146,8 @@ public:
     }
 
     /**
-     * Send given number of bytes from source buffer to device. Store
-     * received bytes in destination buffer. A read operation may be
-     * performed by passing NULL as the source buffer. A write operation
-     * by passing NULL as the destination buffer.
+     * Transfer given number of bytes from source buffer to
+     * device. Store received bytes in destination buffer.
      * @param[in] dest destination buffer.
      * @param[in] src source buffer.
      * @param[in] count number of bytes to transfer.
@@ -146,6 +155,26 @@ public:
     void transfer(void* dest, const void* src, size_t count)
     {
       m_spi.transfer(dest, src, count);
+    }
+
+    /**
+     * Read given number of bytes from device and store in buffer.
+     * @param[in] buf buffer pointer.
+     * @param[in] count number of bytes.
+     */
+    void read(void* buf, size_t count)
+    {
+      m_spi.read(buf, count);
+    }
+
+    /**
+     * Write given number of bytes from buffer to device.
+     * @param[in] buf buffer pointer.
+     * @param[in] count number of bytes.
+     */
+    void write(const void* buf, size_t count)
+    {
+      m_spi.write(buf, count);
     }
 
   protected:
