@@ -53,3 +53,7 @@ transfer | 1 | 3.44
 read | 4 | 13.37
 write | 4  | 13.56
 transfer | 4  | 14.06
+
+## Dependencies
+
+* [General Purpose Input/Output library for Arduino, GPIO](https://github.com/mikaelpatel/Arduino-GPIO)
