@@ -1,6 +1,6 @@
 /**
  * @file SPI.h
- * @version 1.3
+ * @version 1.4
  *
  * @section License
  * Copyright (C) 2017, Mikael Patel
@@ -56,13 +56,14 @@ public:
   virtual uint8_t transfer(uint8_t value) = 0;
 
   /**
+   * @override{SPI}
    * Transfer given number of bytes from source buffer to
    * device. Store received bytes in destination buffer.
    * @param[in] dest destination buffer.
    * @param[in] src source buffer.
    * @param[in] count number of bytes to transfer.
    */
-  void transfer(void* dest, const void* src, size_t count)
+  virtual void transfer(void* dest, const void* src, size_t count)
   {
     if (count == 0 || dest == NULL || src == NULL) return;
     const uint8_t* sp = (const uint8_t*) src;
@@ -71,11 +72,12 @@ public:
   }
 
   /**
+   * @override{SPI}
    * Read given number of bytes from device and store in buffer.
    * @param[in] buf buffer pointer.
    * @param[in] count number of bytes.
    */
-  void read(void* buf, size_t count)
+  virtual void read(void* buf, size_t count)
   {
     if (count == 0 || buf == NULL) return;
     uint8_t* bp = (uint8_t*) buf;
@@ -83,11 +85,12 @@ public:
   }
 
   /**
+   * @override{SPI}
    * Write given number of bytes from buffer to device.
    * @param[in] buf buffer pointer.
    * @param[in] count number of bytes.
    */
-  void write(const void* buf, size_t count)
+  virtual void write(const void* buf, size_t count)
   {
     if (count == 0 || buf == NULL) return;
     uint8_t* bp = (uint8_t*) buf;

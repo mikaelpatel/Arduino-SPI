@@ -4,9 +4,9 @@ The Serial Peripheral Interface library is an abstract interface for
 bus managers and device driver support.
 
 The library contains bus manager implementations for hardware
-resources (SPI and USI) and software using Ardino-GPIO.
+resources (AVR SPI and USI) and software using Ardino-GPIO.
 
-Version: 1.5
+Version: 1.6
 
 ## Classes
 
@@ -22,37 +22,37 @@ Version: 1.5
 
 ## Benchmarks
 
-Benchmarks include bus acquire and release, and slave select pin handling.
+Benchmarks include bus acquire-release, and slave select pin handling.
 
 #### Software SPI Bus Manager
 
 Operation (LSB @ 570 kHz) | Bytes | us
 ----------|-------|----
-transfer | 1 | 16
-read | 4 | 68
-write | 4  | 67
-transfer | 4  | 67
+transfer | 1 | 16.62
+read | 4 | 70.19
+write | 4  | 68.75
+transfer | 4  | 70.75
 
-Operation (MSB @ 720 kHz) | Bytes | us
+Operation (MSB @ 760 kHz) | Bytes | us
 ----------|-------|----
-transfer | 1 | 14
-read | 4 | 55
-write | 4  | 56
-transfer | 4  | 57
+transfer | 1 | 13.81
+read | 4 | 55.94
+write | 4  | 56.31
+transfer | 4  | 58.5
 
 Wiring | us | SPI | us | Xn
 ------ |----|------|----|----
-shiftIn | 85 | var = spi.transfer(0) | 16 | 5
-shiftOut | 109 | spi.transfer(var) | 15 | 7
+shiftIn | 84.19 | var = spi.transfer(0) | 15.75 | 5.35
+shiftOut | 108.9 | spi.transfer(var) | 15.00 | 7.26
 
 #### Hardware SPI Bus Manager
 
 Operation (LSB/MSB @ 8 MHz) | Bytes | us
 ----------|-------|----
 transfer | 1 | 3.44
-read | 4 | 13.37
-write | 4  | 13.56
-transfer | 4  | 14.06
+read | 4 | 8.50
+write | 4  | 8.44
+transfer | 4  | 8.96
 
 ## Dependencies
 

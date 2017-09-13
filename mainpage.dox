@@ -6,7 +6,7 @@ for bus managers and device driver support (SPI::Device).
 The library contains bus manager implementations for hardware
 resources (Hardware::SPI) and using Ardino-GPIO (Software::SPI).
 
-Version: 1.5
+Version: 1.6
 */
 
 /** @page License
