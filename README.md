@@ -1,10 +1,9 @@
 # Arduino-SPI
 
 The Serial Peripheral Interface library is an abstract interface for
-bus managers and device driver support.
-
-The library contains bus manager implementations for hardware
-resources (AVR SPI and USI) and software using Ardino-GPIO.
+bus managers and device driver support. the library contains bus
+manager implementations for hardware resources (AVR SPI and USI) and
+software using Ardino-GPIO.
 
 Version: 1.6
 
@@ -22,7 +21,8 @@ Version: 1.6
 
 ## Benchmarks
 
-Benchmarks include bus acquire-release, and slave select pin handling.
+Benchmarks include bus acquire-release (multitasking support), and
+slave select pin handling.
 
 #### Software SPI Bus Manager
 
