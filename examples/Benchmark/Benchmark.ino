@@ -1,9 +1,9 @@
 #include "GPIO.h"
 #include "SPI.h"
 
-// Configuration:
-// #define USE_SOFTWARE_SPI
-#define USE_HARDWARE_SPI
+// Configuration: SPI/BITORDER
+#define USE_SOFTWARE_SPI
+// #define USE_HARDWARE_SPI
 // #define BITORDER LSBFIRST
 #define BITORDER MSBFIRST
 
@@ -11,7 +11,7 @@
 #include "Software/SPI.h"
 #if defined(ARDUINO_attiny)
 GPIO<BOARD::D0> ss;
-Software::TWI<BOARD::D1, BOARD::D2> twi;
+Software::SPI<BOARD::D1, BOARD::D2, BOARD::D3> spi;
 SPI::Device<0, BITORDER, SPI::MAX_FREQ, BOARD::D0> dev(spi);
 #else
 GPIO<BOARD::D10> ss;

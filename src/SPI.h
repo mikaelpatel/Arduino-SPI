@@ -56,6 +56,26 @@ public:
   virtual uint8_t transfer(uint8_t value) = 0;
 
   /**
+   * Read value from device.
+   * @param[out] value read from device.
+   */
+  SPI& operator>>(uint8_t& value)
+  {
+    value = transfer(0);
+    return (*this);
+  }
+
+  /**
+   * Write value to device. Shorthand for write().
+   * @param[in] value to write to device.
+   */
+  SPI& operator<<(uint8_t value)
+  {
+    transfer(value);
+    return (*this);
+  }
+
+  /**
    * @override{SPI}
    * Transfer given number of bytes from source buffer to
    * device. Store received bytes in destination buffer.
