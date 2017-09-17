@@ -60,6 +60,7 @@ public:
    * @param[out] value read from device.
    */
   SPI& operator>>(uint8_t& value)
+    __attribute__((always_inline))
   {
     value = transfer(0);
     return (*this);
@@ -70,6 +71,7 @@ public:
    * @param[in] value to write to device.
    */
   SPI& operator<<(uint8_t value)
+    __attribute__((always_inline))
   {
     transfer(value);
     return (*this);
@@ -144,6 +146,7 @@ public:
      * Acquire bus manager and slave device.
      */
     void acquire()
+      __attribute__((always_inline))
     {
       m_spi.acquire(MODE, BITORDER, F_CPU / FREQ);
       m_ss.toggle();
@@ -153,6 +156,7 @@ public:
      * Release bus manager and slave device.
      */
     void release()
+      __attribute__((always_inline))
     {
       m_ss.toggle();
       m_spi.release();
@@ -164,6 +168,7 @@ public:
      * @return received value.
      */
     uint8_t transfer(uint8_t value)
+      __attribute__((always_inline))
     {
       return (m_spi.transfer(value));
     }
@@ -176,6 +181,7 @@ public:
      * @param[in] count number of bytes to transfer.
      */
     void transfer(void* dest, const void* src, size_t count)
+      __attribute__((always_inline))
     {
       m_spi.transfer(dest, src, count);
     }
@@ -186,6 +192,7 @@ public:
      * @param[in] count number of bytes.
      */
     void read(void* buf, size_t count)
+      __attribute__((always_inline))
     {
       m_spi.read(buf, count);
     }
@@ -196,6 +203,7 @@ public:
      * @param[in] count number of bytes.
      */
     void write(const void* buf, size_t count)
+      __attribute__((always_inline))
     {
       m_spi.write(buf, count);
     }
