@@ -51,33 +51,35 @@ public:
 
   /**
    * Read count number of bytes from SRAM address to buffer.
-   * @param[in] addr memory address on device.
-   * @param[in] buf destination buffer pointer.
+   * @param[in] dest destination buffer pointer.
+   * @param[in] src source memory address on device.
    * @param[in] count number of bytes to read from device.
    */
-  void read(uint32_t addr, void* buf, size_t count)
+  void read(void* dest, uint32_t src, size_t count)
   {
-    addr = __builtin_bswap32(addr);
+    uint8_t* header = (uint8_t*) &src;
+    src = __builtin_bswap32(src);
+    header[0] = READ;
     acquire();
-    transfer(READ);
-    write(((uint8_t*) &addr) + 1, 3);
-    read(buf, count);
+    write(header, sizeof(src));
+    read(dest, count);
     release();
   }
 
   /**
    * Write count number of bytes to SRAM address from buffer.
-   * @param[in] addr memory address on device.
-   * @param[in] buf source buffer pointer.
+   * @param[in] dest destination memory address on device.
+   * @param[in] src source buffer pointer.
    * @param[in] count number of bytes to write to device.
    */
-  void write(uint32_t addr, const void* buf, size_t count)
+  void write(uint32_t dest, const void* src, size_t count)
   {
-    addr = __builtin_bswap32(addr);
+    uint8_t* header = (uint8_t*) &dest;
+    dest = __builtin_bswap32(dest);
+    header[0] = WRITE;
     acquire();
-    transfer(WRITE);
-    write(((uint8_t*) &addr) + 1, 3);
-    write(buf, count);
+    write(header, sizeof(dest));
+    write(src, count);
     release();
   }
 

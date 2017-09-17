@@ -33,25 +33,29 @@ void setup()
 
 void loop()
 {
-  // 11.25/11.25 us, protocol overhead
+  // SRAM performance: N is number of bytes
+  // write: 9.875 + N*1.4275 us, max. 700 kbyte/s
+  // read: 9.875 + N*1.5 us, max. 670 kbyte/s
+
+  // 9.875/9.875 us, protocol overhead
   sram.write(0x0000, buf, 0);
-  sram.read(0x0000, buf, 0);
+  sram.read(buf, 0x0000, 0);
 
-  // 12.94/13 us/byte, 77 kbyte/s, 1 byte
+  // 11.56/11.62 us/byte, 90 kbyte/s, 1 byte
   sram.write(0x0001, buf, 1);
-  sram.read(0x0001, buf, 1);
+  sram.read(buf, 0x0001, 1);
 
-  // 2.587/2.625 us/byte, 400 kbyte/s, 10 byte
+  // 2.45/2.49 us/byte, 410 kbyte/s, 10 byte
   sram.write(0x0010, buf, 10);
-  sram.read(0x0010, buf, 10);
+  sram.read(buf, 0x0010, 10);
 
-  // 1.552/1.612 us/byte, 625 kbyte/s, 100 byte
+  // 1.539/1.599 us/byte, 650 kbyte/s, 100 byte
   sram.write(0x0100, buf, 100);
-  sram.read(0x00100, buf, 100);
+  sram.read(buf, 0x00100, 100);
 
-  // 1.455/1.522 us/byte, 667 kbyte/s, 1000 byte
+  // 1.454/1.522 us/byte, 690 kbyte/s, 1000 byte
   sram.write(0x1000, buf, sizeof(buf));
-  sram.read(0x1000, buf, sizeof(buf));
+  sram.read(buf, 0x1000, sizeof(buf));
 
   // Print buffer and increment values
   for (size_t i = 0; i < BUF_MAX; i++) {
