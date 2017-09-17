@@ -35,8 +35,8 @@
  *                       +------------+
  * @endcode
  */
-template<BOARD::pin_t SS_PIN>
-class SRAM : protected SPI::Device<0, MSBFIRST, 16000000L, SS_PIN> {
+template<BOARD::pin_t SS_PIN, uint32_t FREQ = 16000000L>
+class SRAM : protected SPI::Device<0, MSBFIRST, FREQ, SS_PIN> {
 public:
   /** Maximum device clock frequency. */
   static const uint32_t MAX_FREQ = 16000000L;
