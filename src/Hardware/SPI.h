@@ -62,12 +62,13 @@ public:
       spr++;
       scale >>= 1;
     }
+    if (scale > 7) scale = 7;
 
     // Set control registers: mode, bitorder and clock
     SPCR = _BV(SPE)
          | _BV(MSTR)
          | (bitorder == LSBFIRST ? _BV(DORD) : 0)
-         | ((mode & 3) << CPHA)
+         | ((mode & 0x03) << CPHA)
          | ((spr >> 1) & 3);
     SPSR = ((spr & 0x01) == 0);
   }
@@ -88,6 +89,7 @@ public:
    * @return received value.
    */
   virtual uint8_t transfer(uint8_t value)
+    __attribute__((always_inline))
   {
     SPDR = value;
     __asm__ __volatile__("nop");
