@@ -30,13 +30,13 @@ SRPI<BITORDER, BOARD::D12, BOARD::D13> srpi;
 #endif
 
 #if defined(ARDUINO_attiny)
-#define MOSI_PIN 11
-#define MISO_PIN 12
-#define SCK_PIN 13
-#else
 #define MOSI_PIN 1
 #define MISO_PIN 2
 #define SCK_PIN 3
+#else
+#define MOSI_PIN 11
+#define MISO_PIN 12
+#define SCK_PIN 13
 #endif
 
 void setup()
@@ -49,19 +49,19 @@ void loop()
 {
   uint8_t value;
 
-  // 85 us
+  // 84 us, 95 kHz
   ss.toggle();
   value = shiftIn(MISO_PIN, SCK_PIN, BITORDER);
   ss.toggle();
   delayMicroseconds(10);
 
-  // 16 us
+  // 13 us, 762 kHz
   ss.toggle();
   spi >> value;
   ss.toggle();
   delayMicroseconds(10);
 
-  // 5 us
+  // 4.7 us, 1.78 HHz
   ss.toggle();
   srpi >> value;
   ss.toggle();
