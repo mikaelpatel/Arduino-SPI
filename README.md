@@ -5,7 +5,7 @@ bus managers and device driver support. the library contains bus
 manager implementations for hardware resources (AVR SPI and USI) and
 software using Ardino-GPIO.
 
-Version: 1.8
+Version: 1.7
 
 ## Classes
 
