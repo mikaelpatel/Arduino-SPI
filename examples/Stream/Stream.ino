@@ -21,14 +21,18 @@ SRAM<BOARD::D10> sram(spi);
 SRAM<BOARD::D10>::Stream<10000> ios(sram);
 SRAM<BOARD::D10>::Stream<10000> temps(sram, 10000);
 
-const int N = 100;
-uint32_t n, s0, m0, m1, m2, m3;
+const int N = 1000;
+int count = 0;
+uint32_t s0, m0, m1, m2, m3, m4, m5;
 
 void setup()
 {
   Serial.begin(57600);
   while (!Serial);
+}
 
+void loop()
+{
   // Print N analog samples to serial stream
   s0 = micros();
   for (int i = 0; i < N; i++) {
@@ -47,7 +51,7 @@ void setup()
   m1 = micros() - s0;
 
   // Transfer data between two sram streams
-  n = ios.available();
+  count = ios.available();
   s0 = micros();
   while (ios.available())
     temps.write(ios.read());
@@ -59,20 +63,33 @@ void setup()
     Serial.write(temps.read());
   m3 = micros() - s0;
 
+  // Write to sram stream
+  s0 = micros();
+  for (int i = 0; i < count; i++) ios.write(i);
+  m4 = micros() - s0;
+
+  // Read from sram stream
+  s0 = micros();
+  uint16_t sum = 0;
+  for (int i = 0; i < count; i++) sum += ios.read();
+  m5 = micros() - s0;
+
   Serial.print(F("Samples, N = "));
   Serial.println(N);
   Serial.print(F("Serial.print, m0 = "));
   Serial.println(m0 / N);
   Serial.print(F("SRAM::Stream.print, m1 = "));
   Serial.println(m1 / N);
-  Serial.print(F("SRAM::Stream.available, n = "));
-  Serial.println(n);
+  Serial.print(F("SRAM::Stream.available, count = "));
+  Serial.println(count);
   Serial.print(F("SRAM::Stream.write/read, m2 = "));
-  Serial.println(m2 / n);
+  Serial.println(m2 / count);
   Serial.print(F("SRAM::Stream.read/Serial.write, m3 = "));
-  Serial.println(m3 / N);
-}
+  Serial.println(m3 / count);
+  Serial.print(F("SRAM::Stream.write, m4 = "));
+  Serial.println(m4 / count);
+  Serial.print(F("SRAM::Stream.read, m5 = "));
+  Serial.println(m5 / count);
 
-void loop()
-{
+  delay(1000);
 }

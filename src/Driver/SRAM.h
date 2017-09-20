@@ -157,8 +157,9 @@ public:
      */
     virtual int read()
     {
-      int res = peek();
-      if (res < 0) return (res);
+      if (m_count == 0) return (-1);
+      uint8_t res = 0;
+      m_sram.read(&res, m_addr + m_get, sizeof(res));
       m_count -= 1;
       m_get += 1;
       if (m_get == SIZE) m_get = 0;
