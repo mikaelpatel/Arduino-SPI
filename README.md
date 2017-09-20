@@ -5,7 +5,7 @@ bus managers and device driver support. the library contains bus
 manager implementations for hardware resources (AVR SPI and USI) and
 software using Ardino-GPIO.
 
-Version: 1.7
+Version: 1.8
 
 ## Classes
 
@@ -16,13 +16,15 @@ Version: 1.7
 ## Drivers
 
 * [23LC1024, 1 Mbit Serial SRAM, SRAM](./src/Driver/SRAM.h)
+* [SRAM Stream, SRAM::Stream](./src/Driver/SRAM.h)
 
 ## Example Sketches
 
 * [Benchmark](./examples/Benchmark)
 * [ShiftIn](./examples/ShiftIn)
 * [ShiftOut](./examples/ShiftOut)
-* [SRAM](./examples/SRAMa)
+* [SRAM](./examples/SRAM)
+* [Stream](./examples/Stream)
 
 ## Benchmarks
 
