@@ -127,6 +127,34 @@ public:
 
     /**
      * @override{Stream}
+     * Write given buffer and numbe of bytes to stream. Return number
+     * of bytes written.
+     * @param[in] bufffer to write.
+     * @param[in] size number of byets to write.
+     * @return number of bytes.
+     */
+    virtual size_t write(const uint8_t *buffer, size_t size)
+    {
+      uint16_t room = SIZE - m_count;
+      if (room == 0) return (0);
+      if (size > room) size = room;
+      size_t res = size;
+      room = SIZE - m_put;
+      if (size > room) {
+	m_sram.write(m_addr + m_put, buffer, room);
+	buffer += room;
+	size -= room;
+	m_count += room;
+	m_put = 0;
+      }
+      m_sram.write(m_addr + m_put, buffer, size);
+      m_count += size;
+      m_put += size;
+      return (res);
+    }
+
+    /**
+     * @override{Stream}
      * Returns number of bytes available for read().
      * @return bytes available.
      */
