@@ -115,8 +115,8 @@ public:
     while (--count) {
       value = *sp++;
       loop_until_bit_is_set(SPSR, SPIF);
-      *dp++ = SPDR;
       SPDR = value;
+      *dp++ = SPDR;
     }
     loop_until_bit_is_set(SPSR, SPIF);
     *dp = SPDR;
@@ -132,13 +132,12 @@ public:
   {
     if (count == 0 || buf == NULL) return;
     uint8_t* bp = (uint8_t*) buf;
-    uint8_t value;
     SPDR = 0;
     while (--count) {
+      __asm__ __volatile__("nop");
       loop_until_bit_is_set(SPSR, SPIF);
-      value = SPDR;
       SPDR = 0;
-      *bp++ = value;
+      *bp++ = SPDR;
     }
     loop_until_bit_is_set(SPSR, SPIF);
     *bp = SPDR;
