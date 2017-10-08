@@ -2,8 +2,7 @@
 #include "SPI.h"
 
 // Configuration: SPI/BITORDER
-#define USE_SOFTWARE_SPI
-// #define USE_HARDWARE_SPI
+// #define USE_SOFTWARE_SPI
 // #define BITORDER LSBFIRST
 #define BITORDER MSBFIRST
 
@@ -18,7 +17,8 @@ GPIO<BOARD::D10> ss;
 Software::SPI<BOARD::D11, BOARD::D12, BOARD::D13> spi;
 SPI::Device<0, BITORDER, SPI::MAX_FREQ, BOARD::D10> dev(spi);
 #endif
-#elif defined(USE_HARDWARE_SPI)
+
+#else
 #include "Hardware/SPI.h"
 GPIO<BOARD::D10> ss;
 Hardware::SPI spi;

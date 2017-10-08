@@ -42,9 +42,9 @@ public:
    * Serial Perpheral Interface (SPI) constructor. Initiate pin
    * input/output mode.
    */
-  SPI()
+  SPI() :
+    ::SPI()
   {
-    m_busy = false;
     m_sck.output();
     m_mosi.output();
     m_miso.input();
@@ -60,8 +60,7 @@ public:
   virtual void acquire(uint8_t mode, uint8_t bitorder, uint8_t scale)
   {
     (void) scale;
-    while (m_busy) yield();
-    m_busy = true;
+    lock();
     m_sck = mode & 2;
     m_cpha = mode & 1;
     m_bitorder = bitorder;
@@ -73,8 +72,8 @@ public:
    */
   virtual void release()
   {
-    m_busy = false;
     m_mosi = LOW;
+    unlock();
   }
 
   /**
@@ -119,9 +118,6 @@ protected:
 
   /** Master Input Slave Output pin. */
   GPIO<MISO_PIN> m_miso;
-
-  /** Bus manager semaphore. */
-  volatile bool m_busy;
 
   /** Clock phase flag. */
   uint8_t m_cpha;

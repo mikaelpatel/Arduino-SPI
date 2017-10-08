@@ -33,6 +33,11 @@ public:
   static const uint32_t MAX_FREQ = F_CPU / MIN_CLOCK_SCALE;
 
   /**
+   * Construct and initiate bus manager.
+   */
+  SPI() : m_busy(false) {}
+
+  /**
    * @override{SPI}
    * Acquire bus access with given mode.
    * @param[in] mode of access.
@@ -45,7 +50,10 @@ public:
    * @override{SPI}
    * Release bus access.
    */
-  virtual void release() = 0;
+  virtual void release()
+  {
+    unlock();
+  }
 
   /**
    * @override{SPI}
@@ -215,5 +223,26 @@ public:
     /** Slave select pin. */
     GPIO<SS_PIN> m_ss;
   };
+
+protected:
+  /** Bus manager semaphore. */
+  volatile bool m_busy;
+
+  /**
+   * Lock bus manager.
+   */
+  void lock()
+  {
+    while (m_busy) yield();
+    m_busy = true;
+  }
+
+  /**
+   * Unlock bus manager.
+   */
+  void unlock()
+  {
+    m_busy = false;
+  }
 };
 #endif
