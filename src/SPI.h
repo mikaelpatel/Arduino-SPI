@@ -1,6 +1,6 @@
 /**
  * @file SPI.h
- * @version 1.4
+ * @version 1.5
  *
  * @section License
  * Copyright (C) 2017, Mikael Patel
@@ -26,11 +26,8 @@
  */
 class SPI {
 public:
-  /** Minimum clock frequency scale. */
-  static const uint8_t MIN_CLOCK_SCALE = 2;
-
   /** Maximum clock frequency. */
-  static const uint32_t MAX_FREQ = F_CPU / MIN_CLOCK_SCALE;
+  static const uint32_t MAX_FREQ = F_CPU / 2;
 
   /**
    * Construct and initiate bus manager.
@@ -39,12 +36,29 @@ public:
 
   /**
    * @override{SPI}
+   * Calculate clock prescale from device frequency.
+   * @param[in] frequency device access.
+   * @return prescale
+   */
+  virtual uint8_t prescale(uint32_t frequency)
+  {
+    return (F_CPU / frequency);
+  }
+
+  /**
+   * @override{SPI}
    * Acquire bus access with given mode.
    * @param[in] mode of access.
    * @param[in] bitorder of serial data.
-   * @param[in] scale clock frequency.
+   * @param[in] prescale for device.
    */
-  virtual void acquire(uint8_t mode, uint8_t bitorder, uint8_t scale) = 0;
+  virtual void acquire(uint8_t mode, uint8_t bitorder, uint8_t prescale)
+  {
+    (void) mode;
+    (void) bitorder;
+    (void) prescale;
+    lock();
+  }
 
   /**
    * @override{SPI}
@@ -144,7 +158,8 @@ public:
      * @param[in] ss initial slave select pin state (default HIGH).
      */
     Device(SPI& spi, bool ss = HIGH) :
-      m_spi(spi)
+      m_spi(spi),
+      PRESCALE(spi.prescale(FREQ))
     {
       m_ss.output();
       m_ss = ss;
@@ -156,7 +171,7 @@ public:
     void acquire()
       __attribute__((always_inline))
     {
-      m_spi.acquire(MODE, BITORDER, F_CPU / FREQ);
+      m_spi.acquire(MODE, BITORDER, PRESCALE);
       m_ss.toggle();
     }
 
@@ -222,6 +237,9 @@ public:
 
     /** Slave select pin. */
     GPIO<SS_PIN> m_ss;
+
+    /** Bus clock prescale. */
+    const uint8_t PRESCALE;
   };
 
 protected:
@@ -232,6 +250,7 @@ protected:
    * Lock bus manager.
    */
   void lock()
+    __attribute__((always_inline))
   {
     while (m_busy) yield();
     m_busy = true;
@@ -241,6 +260,7 @@ protected:
    * Unlock bus manager.
    */
   void unlock()
+    __attribute__((always_inline))
   {
     m_busy = false;
   }

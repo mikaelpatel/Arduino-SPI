@@ -44,32 +44,41 @@ public:
 
   /**
    * @override{SPI}
+   * Calculate bus prescale from device frequency.
+   * @param[in] frequency device access.
+   * @return prescale
+   */
+  virtual uint8_t prescale(uint32_t frequency)
+  {
+    uint16_t scale = F_CPU / frequency;
+    if (scale <= 2)  return (0b100);
+    if (scale <= 4)  return (0b000);
+    if (scale <= 8)  return (0b101);
+    if (scale <= 16) return (0b001);
+    if (scale <= 32) return (0b110);
+    if (scale <= 64) return (0b111);
+    return (0b011);
+  }
+
+  /**
+   * @override{SPI}
    * Acquire bus access. Yield until bus is released.
    * @param[in] mode of access.
    * @param[in] bitorder of serial data.
-   * @param[in] scale clock frequency.
+   * @param[in] prescale clock prescale.
    */
-  virtual void acquire(uint8_t mode, uint8_t bitorder, uint8_t scale)
+  virtual void acquire(uint8_t mode, uint8_t bitorder, uint8_t prescale)
   {
     // Wait for bus manager to be released
     lock();
-
-    // Calculate clock setting for given scale
-    uint8_t spr = 0;
-    scale >>= 2;
-    while (scale != 0) {
-      spr++;
-      scale >>= 1;
-    }
-    if (scale > 7) scale = 7;
 
     // Set control registers: mode, bitorder and clock
     SPCR = _BV(SPE)
          | _BV(MSTR)
          | (bitorder == LSBFIRST ? _BV(DORD) : 0)
          | ((mode & 0x03) << CPHA)
-         | ((spr >> 1) & 3);
-    SPSR = ((spr & 0x01) == 0);
+         | (prescale & 0x03);
+    SPSR = ((prescale >> 3) & 0x01);
   }
 
   /**
@@ -188,16 +197,16 @@ public:
    * Acquire bus access. Yield until bus is released.
    * @param[in] mode of access.
    * @param[in] bitorder of serial data.
-   * @param[in] scale clock frequency.
+   * @param[in] prescale clock prescale.
    */
-  virtual void acquire(uint8_t mode, uint8_t bitorder, uint8_t scale)
+  virtual void acquire(uint8_t mode, uint8_t bitorder, uint8_t prescale)
   {
     // Wait for bus manager to be released
     lock();
 
     // Not used: only MSBFIRST bitorder and max frequency
     (void) bitorder;
-    (void) scale;
+    (void) prescale;
 
     // Set clock polarity
     m_sck.write(mode & 0x02);
