@@ -109,6 +109,8 @@ public:
     return (value);
   }
 
+  using ::SPI::transfer;
+
 protected:
   /** Clock pin. */
   GPIO<SCK_PIN> m_sck;
@@ -120,7 +122,7 @@ protected:
   GPIO<MISO_PIN> m_miso;
 
   /** Clock phase flag. */
-  uint8_t m_cpha;
+  bool m_cpha;
 
   /** Serial data bitorder flag. */
   uint8_t m_bitorder;

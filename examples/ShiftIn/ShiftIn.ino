@@ -4,7 +4,7 @@
 #include "benchmark.h"
 
 // Configuration: SPI/BITORDER
-// #define USE_SOFTWARE_SPI
+#define USE_SOFTWARE_SPI
 // #define BITORDER LSBFIRST
 #define BITORDER MSBFIRST
 

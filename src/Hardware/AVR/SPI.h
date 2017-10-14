@@ -78,7 +78,7 @@ public:
          | (bitorder == LSBFIRST ? _BV(DORD) : 0)
          | ((mode & 0x03) << CPHA)
          | (prescale & 0x03);
-    SPSR = ((prescale >> 3) & 0x01);
+    SPSR = ((prescale >> 2) & 0x01);
   }
 
   /**
@@ -91,7 +91,7 @@ public:
     __attribute__((always_inline))
   {
     SPDR = value;
-    __asm__ __volatile__("nop");
+    __asm__ __volatile__("nop" ::: "memory");
     loop_until_bit_is_set(SPSR, SPIF);
     return (SPDR);
   }
@@ -113,8 +113,10 @@ public:
     SPDR = value;
     while (--count) {
       value = *sp++;
+      __asm__ __volatile__("" ::: "memory");
       loop_until_bit_is_set(SPSR, SPIF);
       SPDR = value;
+      __asm__ __volatile__("" ::: "memory");
       *dp++ = SPDR;
     }
     loop_until_bit_is_set(SPSR, SPIF);
@@ -133,9 +135,10 @@ public:
     uint8_t* bp = (uint8_t*) buf;
     SPDR = 0;
     while (--count) {
-      __asm__ __volatile__("nop");
+      __asm__ __volatile__("nop" ::: "memory");
       loop_until_bit_is_set(SPSR, SPIF);
       SPDR = 0;
+      __asm__ __volatile__("" ::: "memory");
       *bp++ = SPDR;
     }
     loop_until_bit_is_set(SPSR, SPIF);
@@ -156,8 +159,10 @@ public:
     SPDR = value;
     while (--count) {
       value = *bp++;
+      __asm__ __volatile__("" ::: "memory");
       loop_until_bit_is_set(SPSR, SPIF);
       SPDR = value;
+      __asm__ __volatile__("" ::: "memory");
     }
     loop_until_bit_is_set(SPSR, SPIF);
   }

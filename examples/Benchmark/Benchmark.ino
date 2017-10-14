@@ -41,74 +41,125 @@ void loop()
   // and device setting
 
   const uint8_t PRESCALE = spi.prescale(SPI::MAX_FREQ);
-  static uint32_t value = 0;
-  uint32_t res;
-
-  BENCHMARK("1a. SPI bus manager serial data transfer (1 byte)", 1000) {
-    ss.toggle();
-    spi.acquire(0, BITORDER, PRESCALE);
-    spi.transfer(value);
-    spi.release();
-    ss.toggle();
-  }
+  uint8_t src[100];
+  uint8_t dest[100];
 
   ss.toggle();
   spi.acquire(0, BITORDER, PRESCALE);
-  BENCHMARK("1b. - transfer only (1 byte)", 1000) {
-    spi.transfer(value);
+  BENCHMARK("1a. SPI bus manager data transfer only (1 byte)", 1000) {
+    spi.transfer(src[0]);
+  }
+
+  BENCHMARK("1b. - transfer (10 byte)", 1000) {
+    spi.transfer(dest, src, 10);
+  }
+
+  BENCHMARK("1c. - transfer (100 byte)", 1000) {
+    spi.transfer(dest, src, 100);
+  }
+
+  BENCHMARK("1d. - read (100 byte)", 1000) {
+    spi.read(dest, 100);
+  }
+
+  BENCHMARK("1e. - write only (100 byte)", 1000) {
+    spi.write(src, 100);
   }
   spi.release();
   ss.toggle();
 
-  BENCHMARK("2a. SPI device driver serial data transfer (1 byte)", 1000) {
-    dev.acquire();
-    dev.transfer(value);
-    dev.release();
+  BENCHMARK("2a. SPI bus manager data transfer (1 byte)", 1000) {
+    ss.toggle();
+    spi.acquire(0, BITORDER, PRESCALE);
+    spi.transfer(src[0]);
+    spi.release();
+    ss.toggle();
+  }
+
+  BENCHMARK("2b. - transfer (10 byte)", 1000) {
+    ss.toggle();
+    spi.acquire(0, BITORDER, PRESCALE);
+    spi.transfer(dest, src, 10);
+    spi.release();
+    ss.toggle();
+  }
+
+  BENCHMARK("2c. - transfer (100 byte)", 1000) {
+    ss.toggle();
+    spi.acquire(0, BITORDER, PRESCALE);
+    spi.transfer(dest, src, 100);
+    spi.release();
+    ss.toggle();
+  }
+
+  BENCHMARK("2d. - read (100 byte)", 1000) {
+    ss.toggle();
+    spi.acquire(0, BITORDER, PRESCALE);
+    spi.read(dest, 100);
+    spi.release();
+    ss.toggle();
+  }
+
+  BENCHMARK("2e. - write (100 byte)", 1000) {
+    ss.toggle();
+    spi.acquire(0, BITORDER, PRESCALE);
+    spi.write(dest, 100);
+    spi.release();
+    ss.toggle();
   }
 
   dev.acquire();
-  BENCHMARK("2b. - transfer only (1 byte)", 1000) {
-    dev.transfer(value);
+  BENCHMARK("3a. SPI device driver data transfer only (1 byte)", 1000) {
+    dev.transfer(src[0]);
+  }
+
+  BENCHMARK("3b. - transfer (10 bytes)", 1000) {
+    dev.transfer(dest, src, 10);
+  }
+
+  BENCHMARK("3c. - transfer (100 bytes)", 1000) {
+    dev.transfer(dest, src, 100);
+  }
+
+  BENCHMARK("3d. - read (100 bytes)", 1000) {
+    dev.read(dest, 100);
+  }
+
+  BENCHMARK("3e. - write (100 bytes)", 1000) {
+    dev.write(src, 100);
   }
   dev.release();
 
-  BENCHMARK("3a. SPI device driver serial buffer read (4 bytes)", 1000) {
+  BENCHMARK("4a. SPI device driver data transfer (1 byte)", 1000) {
     dev.acquire();
-    dev.read(&res, sizeof(value));
+    dev.transfer(src[0]);
     dev.release();
   }
 
-  dev.acquire();
-  BENCHMARK("3b. - read only (4 bytes)", 1000) {
-    dev.read(&res, sizeof(value));
-  }
-  dev.release();
-
-  BENCHMARK("4a. SPI device driver serial buffer write (4 bytes)", 1000) {
+  BENCHMARK("4b. - transfer (10 bytes)", 1000) {
     dev.acquire();
-    dev.write(&value, sizeof(value));
+    dev.transfer(dest, src, 10);
     dev.release();
   }
 
-  dev.acquire();
-  BENCHMARK("4b. - write only (4 bytes)", 1000) {
-    dev.write(&value, sizeof(value));
-  }
-  dev.release();
-
-  BENCHMARK("5a. SPI device driver serial buffer transfer (4 bytes)", 1000) {
+  BENCHMARK("4c. - transfer (100 bytes)", 1000) {
     dev.acquire();
-    dev.transfer(&res, &value, sizeof(value));
+    dev.transfer(dest, src, 100);
     dev.release();
   }
 
-  dev.acquire();
-  BENCHMARK("5b. - transfer only (4 bytes)", 1000) {
-    dev.transfer(&res, &value, sizeof(value));
+  BENCHMARK("4d. - read (100 bytes)", 1000) {
+    dev.acquire();
+    dev.read(dest, 100);
+    dev.release();
   }
-  dev.release();
+
+  BENCHMARK("4e. - write (100 bytes)", 1000) {
+    dev.acquire();
+    dev.write(src, 100);
+    dev.release();
+  }
 
   Serial.println();
   delay(2000);
-  value++;
 }
