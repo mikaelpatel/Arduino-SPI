@@ -9,17 +9,9 @@
 
 #if defined(USE_SOFTWARE_SPI)
 #include "Software/SPI.h"
-#if defined(ARDUINO_attiny)
-#include "Software/Serial.h"
-Software::Serial<BOARD::D0> Serial;
-GPIO<BOARD::D1> ss;
-Software::SPI<BOARD::D2, BOARD::D3, BOARD::D4> spi;
-SPI::Device<0, BITORDER, SPI::MAX_FREQ, BOARD::D1> dev(spi);
-#else
 GPIO<BOARD::D10> ss;
 Software::SPI<BOARD::D11, BOARD::D12, BOARD::D13> spi;
 SPI::Device<0, BITORDER, SPI::MAX_FREQ, BOARD::D10> dev(spi);
-#endif
 
 #else
 #include "Hardware/SPI.h"

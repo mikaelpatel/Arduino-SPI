@@ -5,6 +5,9 @@ bus managers and device driver support. the library contains bus
 manager implementations for hardware resources (AVR SPI and USI) and
 software using Ardino-GPIO.
 
+The design of this library allows multiple bus managers both hardware
+and software, and device drivers directly support bus managers.
+
 Version: 1.8
 
 ## Classes
@@ -19,10 +22,13 @@ Version: 1.8
 * [ShiftIn](./examples/ShiftIn)
 * [ShiftOut](./examples/ShiftOut)
 
+[ATtiny](./examples/ATtiny) variants.
+
 ## Benchmarks
 
-Benchmarks include bus acquire-release (multitasking support), and
-slave select pin handling.
+Benchmarks measurements below do not include bus acquire-release
+(multitasking support), and slave select pin handling. The
+measurements are the transfer time in micro-seconds.
 
 #### Software SPI Bus Manager
 
